@@ -90,7 +90,7 @@ func main11() {
 */
 
 const (
-	RECV_BUF_LEN = 1024
+	RECV_BUF_LEN = 4096
 )
 
 func Listen(lstn_port int, target string, showdata bool) {
@@ -313,7 +313,39 @@ func (v *Serv) Unbind(w http.ResponseWriter, r *http.Request) {
 /*
 curl "http://172.21.3.187:8181/bind?target_addr=172.22.0.226:7070&port=7071"
 curl "http://172.21.3.187:8181/bind?target_addr=172.22.0.23:8989&port=8989"
-curl "http://172.21.3.187:8181/list
+curl "http://172.21.3.187:8181/list"
+
+listen=51101
+if netstat -an|grep LISTEN|grep -w $listen
+then
+echo "alive"
+exit 0
+fi
+
+cd /idmm/soft
+./pm --port=$listen &
+sleep 1
+conf='21101,10.113.181.86,22
+21102,10.113.181.87,22
+21103,10.113.181.88,22
+21104,10.113.181.89,22
+21105,10.113.181.90,22
+21106,10.113.181.91,22
+21111,10.113.182.96,22
+21112,10.113.182.97,22
+21113,10.113.182.98,22
+21114,10.113.182.99,22
+21115,10.113.182.100,22
+21116,10.113.182.101,22
+21117,10.113.181.120,1521
+21118,10.113.182.140,1521'
+
+for line in $conf
+do
+echo $line
+done | awk -F "," '{print "http://localhost:'$listen'/bind?target_addr="$2":"$3"&port="$1}'|xargs curl
+curl "http://localhost:51101/list"
+
 */
 
 func main() {
