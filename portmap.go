@@ -315,6 +315,25 @@ curl "http://172.21.3.187:8181/bind?target_addr=172.22.0.226:7070&port=7071"
 curl "http://172.21.3.187:8181/bind?target_addr=172.22.0.23:8989&port=8989"
 curl "http://172.21.3.187:8181/list"
 
+curl "http://localhost:8181/bind?target_addr=172.22.0.226:7070&port=7071"
+
+172.21.3.100_inform mon.sh
+=========================
+if ps -fu `whoami`|grep -w portmap|grep -v grep
+then
+echo 'exist...'
+else
+BIN_PATH=`dirname $0`
+cd ${BIN_PATH}
+echo 'start...'
+./portmap -port=51101 >/dev/null 2>&1 &
+sleep 1
+curl "http://localhost:51101/bind?target_addr=172.22.0.226:7070&port=7071"
+curl "http://localhost:51101/bind?target_addr=172.22.0.23:8989&port=8989"
+fi
+
+idmm_pm.sh
+=====================
 listen=51101
 if netstat -an|grep LISTEN|grep -w $listen
 then
